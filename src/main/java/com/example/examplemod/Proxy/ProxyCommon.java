@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.example.examplemod.Proxy;
 
 import com.example.examplemod.init.Items;
 import li.cil.scannable.api.API;

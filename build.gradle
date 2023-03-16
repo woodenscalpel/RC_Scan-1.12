@@ -61,6 +61,9 @@ minecraft {
 }
 repositories{
     maven {url = "http://maven.cil.li/"}
+    maven {
+        url  = "https://cursemaven.com"
+    }
 }
 
 dependencies {
@@ -86,10 +89,10 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    implementation files('lib/RecurrentComplex-1.4.8.4.jar')
-    fg.deobf("curse.maven:rc112-223150:4356582")
+    //implementation files('lib/RecurrentComplex-1.4.8.4.jar')
+    implementation fg.deobf("curse.maven:rc112-223150:4356582")
 
-    compile "li.cil.scannable:Scannable:${"MC1.12.2-1.6.3.26"}"
+    implementation "li.cil.scannable:Scannable:${"MC1.12.2-1.6.3.26"}"
     //fg.deobf("li.cil.scannable:Scannable:${"MC1.12.2-1.6.3.26"}")
 
 

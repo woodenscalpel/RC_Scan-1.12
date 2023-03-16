@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.example.examplemod.common.modules;
 
 import li.cil.scannable.api.Icons;
 import li.cil.scannable.api.prefab.AbstractScanResultProvider;
@@ -18,15 +18,16 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import scala.reflect.internal.pickling.UnPickler;
 
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
 public final class ScanResultProviderPos extends AbstractScanResultProvider {
+
+    private static int radius = 1000;
     public static final ScanResultProviderPos INSTANCE = new ScanResultProviderPos();
 
     @Override
@@ -36,11 +37,15 @@ public final class ScanResultProviderPos extends AbstractScanResultProvider {
 
         List<String> data = DataRead(dimension);
 
+        player.getPosition();
+
         for(String dataentry: data){
             String[] dataentrylist = dataentry.split(",");
             Vec3d testV = new Vec3d(Double.parseDouble(dataentrylist[1]),Double.parseDouble(dataentrylist[2]),Double.parseDouble(dataentrylist[3]));
-            callback.accept(new ScanResultCoord(testV,dataentrylist[0]));
-
+            Vec3d dist = testV.subtract(new Vec3d(player.getPosition()));
+            if(dist.lengthVector()< radius) {
+                callback.accept(new ScanResultCoord(testV, dataentrylist[0]));
+            }
 
         }
 
@@ -89,6 +94,11 @@ public final class ScanResultProviderPos extends AbstractScanResultProvider {
         EntityPlayer player = Minecraft.getMinecraft().player;
         assert player != null;
 
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+
+
         final ResourceLocation icon = Icons.INFO;
         double renderPosX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
         double renderPosY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
@@ -101,19 +111,20 @@ public final class ScanResultProviderPos extends AbstractScanResultProvider {
 
         final boolean showDistance = entity.isSneaking();
 
-
+        // Order results by distance to center of screen (deviation from look
+        // vector) so that labels we're looking at are in front of others.
+        results.sort(Comparator.comparing(result -> {
+            final ScanResultCoord scanResult = (ScanResultCoord) result;
+            AxisAlignedBB area = result.getRenderBounds();
+            Vec3d resultPos = new Vec3d((area.minX+area.maxX)/2,(area.minY+area.maxY)/2,(area.minZ+area.maxZ)/2);
+            final Vec3d toResult = resultPos.subtract(viewerEyes);
+            return lookVec.dotProduct(toResult.normalize());
+        }));
 
 
         //drawBox(player, event.getMatrixStack());
         for(ScanResult result1 : results) {
             ScanResultCoord result = (ScanResultCoord) result1;
-                GlStateManager.pushMatrix();
-                GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-                GlStateManager.disableDepth();
-                GlStateManager.disableTexture2D();
-                GlStateManager.enableBlend();
-
-
 
 
                     //AxisAlignedBB area = new AxisAlignedBB(x1,y1,z1,x2,y2,z2);
@@ -125,40 +136,16 @@ public final class ScanResultProviderPos extends AbstractScanResultProvider {
 
                     //area = area.offset(-x1, -y1, -(z1 + 1));
 
-
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translate(-renderPosX, -renderPosY, -renderPosZ);
-                    Color colorRGB = new Color(555555);
-                    GL11.glColor4ub((byte) colorRGB.getRed(), (byte) colorRGB.getGreen(), (byte) colorRGB.getBlue(), (byte) 255);
-
-
-                    GlStateManager.scale(1F, 1F, 1F);
-
-                    GL11.glLineWidth(3F);
-                    renderBlockOutline(area);
-
-
-                    Vec3d resultPos = new Vec3d(area.minX,area.minY,area.minZ);
+                    Vec3d resultPos = new Vec3d((area.minX+area.maxX)/2,(area.minY+area.maxY)/2,(area.minZ+area.maxZ)/2);
                     float distance = (float) Math.sqrt(Math.pow(renderPosX-resultPos.x,2)+Math.pow(renderPosY-resultPos.y,2)+Math.pow(renderPosZ-resultPos.z,2));
                     String name = result.name;
                     renderIconLabel(renderPosX, renderPosY, renderPosZ, yaw, pitch, lookVec, viewerEyes, distance, resultPos, icon, name);
 
 
-
-
-
-
-
-            GL11.glColor4ub((byte) 255, (byte) 255, (byte) 255, (byte) 255);
-                GlStateManager.popMatrix();
-
-
-                GlStateManager.enableDepth();
-                GlStateManager.enableTexture2D();
-                GlStateManager.disableBlend();
-                GL11.glPopAttrib();
-                GlStateManager.popMatrix();
         }
+        GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
             }
 
     private static void renderBlockOutline(AxisAlignedBB aabb) {

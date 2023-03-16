@@ -1,5 +1,6 @@
 package com.example.examplemod;
 
+import com.example.examplemod.common.modules.CapabilityProviderModuleCoord;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -28,7 +29,7 @@ public class ExampleMod
     {
         // some example code
         //MinecraftForge.EVENT_BUS.register(new rendertest());
-        MinecraftForge.EVENT_BUS.register(new StructureLogger());
+        MinecraftForge.EVENT_BUS.register(new CapabilityProviderModuleCoord.StructureLogger());
 
         logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
     }

@@ -1,7 +1,6 @@
 package li.cil.scannable.common.item;
 
-import com.example.examplemod.CapabilityProviderModuleCoord;
-import li.cil.scannable.common.item.AbstractItemScannerModule;
+import com.example.examplemod.common.modules.CapabilityProviderModuleCoord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
