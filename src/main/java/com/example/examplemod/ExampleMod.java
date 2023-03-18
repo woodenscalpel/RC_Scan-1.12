@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ExampleMod.MODID, name = ExampleMod.NAME, version = ExampleMod.VERSION)
+@Mod(modid = ExampleMod.MODID, name = ExampleMod.NAME, version = ExampleMod.VERSION,dependencies = "required-after:scannable")
 public class ExampleMod
 {
     public static final String MODID = "examplemod";
@@ -21,7 +21,10 @@ public class ExampleMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+
         logger = event.getModLog();
+        MinecraftForge.EVENT_BUS.register(new CapabilityProviderModuleCoord.StructureLogger());
+
     }
 
     @EventHandler
@@ -29,7 +32,6 @@ public class ExampleMod
     {
         // some example code
         //MinecraftForge.EVENT_BUS.register(new rendertest());
-        MinecraftForge.EVENT_BUS.register(new CapabilityProviderModuleCoord.StructureLogger());
 
         logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
     }

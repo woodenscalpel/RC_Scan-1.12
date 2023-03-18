@@ -34,38 +34,38 @@ public final class ProxyClient extends ProxyCommon {
     public void onInit(final FMLInitializationEvent event) {
         super.onInit(event);
 
-        NetworkRegistry.INSTANCE.registerGuiHandler(Scannable.instance, new GuiHandlerClient());
+       // NetworkRegistry.INSTANCE.registerGuiHandler(Scannable.instance, new GuiHandlerClient());
 
-        MinecraftForge.EVENT_BUS.register(ScannerRenderer.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(OverlayRenderer.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(ScanManager.INSTANCE);
+     //   MinecraftForge.EVENT_BUS.register(ScannerRenderer.INSTANCE);
+     //   MinecraftForge.EVENT_BUS.register(OverlayRenderer.INSTANCE);
+     //   MinecraftForge.EVENT_BUS.register(ScanManager.INSTANCE);
     }
 
     @Override
     public void onPostInit(final FMLPostInitializationEvent event) {
         super.onPostInit(event);
 
-        ScannerRenderer.INSTANCE.init();
+     //   ScannerRenderer.INSTANCE.init();
     }
 
     // --------------------------------------------------------------------- //
 
     @SubscribeEvent
     public static void handleModelRegistryEvent(final ModelRegistryEvent event) {
-        for (final Item item : Items.getAllItems()) {
-            final ResourceLocation registryName = item.getRegistryName();
-            assert registryName != null;
-            final ModelResourceLocation location = new ModelResourceLocation(registryName, "inventory");
-            ModelLoader.setCustomModelResourceLocation(item, 0, location);
-        }
+      //  for (final Item item : Items.getAllItems()) {
+      //      final ResourceLocation registryName = item.getRegistryName();
+      //      assert registryName != null;
+       //     final ModelResourceLocation location = new ModelResourceLocation(registryName, "inventory");
+       //     ModelLoader.setCustomModelResourceLocation(item, 0, location);
+       // }
     }
 
     @SubscribeEvent
     public static void handleConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (ObjectUtils.notEqual(API.MOD_ID, event.getModID())) {
-            return;
-        }
+     //   if (ObjectUtils.notEqual(API.MOD_ID, event.getModID())) {
+      //      return;
+     //   }
 
-        ConfigManager.sync(API.MOD_ID, Config.Type.INSTANCE);
+      //  ConfigManager.sync(API.MOD_ID, Config.Type.INSTANCE);
     }
 }
