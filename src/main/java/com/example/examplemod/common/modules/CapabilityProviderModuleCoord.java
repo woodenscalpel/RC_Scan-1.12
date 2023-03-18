@@ -38,49 +38,4 @@ public enum CapabilityProviderModuleCoord implements ICapabilityProvider {
         }
         return null;
     }
-
-    public static class StructureLogger {
-        @SubscribeEvent(priority = EventPriority.LOW)
-        public void onStructureGenerationLitePost(StructureGenerationEventLite.Post event) {
-            World world = event.getWorld();
-            if(world.isRemote) return;
-
-            StructureBoundingBox boundingBox = event.getBoundingBox();
-            String structureName = event.getStructureName();
-            //String regionName = convertBoxToRegion(boundingBox);
-
-            int minX = boundingBox.minX;
-            int minZ = boundingBox.minZ;
-            int maxX = boundingBox.maxX;
-            int maxZ = boundingBox.maxZ;
-            int minY = boundingBox.minY;
-            int maxY = boundingBox.maxY;
-
-            int dimension = world.provider.getDimension();
-            //System.out.println("LOADING STRUCTURE!"+structureName);
-            //System.out.println(minX);
-            //System.out.println(minY);
-            //System.out.println(minZ);
-
-            DataWrite(dimension,structureName, (minX+maxX)/2, (minY+maxY)/2, (minZ+maxZ)/2);
-
-            }
-        public static void DataWrite(int dimension, String structureName, int minX, int minY, int minZ) {
-            File fileName = new File(DimensionManager.getCurrentSaveRootDirectory() + File.separator + "data" + File.separator + "RCScan_StructureLocations" + File.separator + dimension + File.separator  + "structures.txt");
-            fileName.getParentFile().mkdirs();
-
-            try {
-                FileWriter fileWriter = new FileWriter(fileName,true);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-                bufferedWriter.write(structureName + "," + minX + "," + minY + "," + minZ);
-                bufferedWriter.newLine();
-                bufferedWriter.close();
-            }
-            catch(IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
-        }
 }

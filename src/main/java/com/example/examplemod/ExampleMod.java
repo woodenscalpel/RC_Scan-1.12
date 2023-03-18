@@ -23,7 +23,7 @@ public class ExampleMod
     {
 
         logger = event.getModLog();
-        MinecraftForge.EVENT_BUS.register(new CapabilityProviderModuleCoord.StructureLogger());
+        MinecraftForge.EVENT_BUS.register(new StructureLogger());
 
     }
 
